@@ -3,270 +3,345 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Valentine 💖</title>
+  <title>Valentine Quiz 💖</title>
   <style>
     :root{
-      --bg1:#fff1f6; --bg2:#ffe4ec; --card:#ffffff; --text:#111827;
-      --pink:#ec4899; --green:#22c55e; --red:#ef4444;
+      --bgA:#5b5ce6;
+      --bgB:#7b3fe4;
+      --card:#f3f0e6;
+      --card2:#efe9db;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --btnBorder:#c7c2b6;
+      --accent:#4f46e5;
     }
     *{ box-sizing:border-box; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
     body{
       margin:0; min-height:100vh; display:grid; place-items:center; padding:18px;
-      background:
-        radial-gradient(circle at 20% 10%, var(--bg2), transparent 45%),
-        radial-gradient(circle at 85% 35%, #ffd1e1, transparent 50%),
-        linear-gradient(135deg, var(--bg1), #fff);
-      color:var(--text);
+      background: radial-gradient(circle at 20% 10%, rgba(255,255,255,.18), transparent 45%),
+                  radial-gradient(circle at 80% 25%, rgba(255,255,255,.12), transparent 50%),
+                  linear-gradient(135deg, var(--bgA), var(--bgB));
+      color: var(--text);
+    }
+    .wrap{ width:min(640px, 100%); }
+    .scorebar{
+      width:100%;
+      background: rgba(255,255,255,.22);
+      border-radius: 999px;
+      padding: 12px 16px;
+      text-align:center;
+      color: rgba(255,255,255,.95);
+      font-weight: 800;
+      letter-spacing:.3px;
+      margin-bottom:14px;
+      backdrop-filter: blur(6px);
     }
     .card{
-      width:min(560px, 100%);
-      background: rgba(255,255,255,.88);
-      border: 1px solid rgba(0,0,0,.06);
-      box-shadow: 0 14px 40px rgba(0,0,0,.10);
-      border-radius: 22px;
-      padding: 22px;
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.18);
+      border: 1px solid rgba(0,0,0,.08);
       position: relative;
       overflow: hidden;
     }
-    .badge{
-      display:inline-block; font-size:12px; padding:6px 10px; border-radius:999px;
-      background: rgba(236,72,153,.12); color:#be185d; font-weight:800;
-      margin-bottom:10px;
+    h2{
+      margin: 6px 0 14px;
+      font-size: 24px;
+      line-height: 1.2;
     }
-    h1{ margin:0 0 8px; font-size:28px; letter-spacing:-.2px; }
-    p{ margin:0 0 14px; line-height:1.45; }
+    .imgBox{
+      width: 240px;
+      height: 240px;
+      border-radius: 14px;
+      overflow:hidden;
+      margin: 10px auto 14px;
+      border: 1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.06);
+      display:grid; place-items:center;
+    }
+    .imgBox img{
+      width:100%; height:100%; object-fit:cover;
+      display:block;
+    }
+    .btns{ display:flex; flex-direction:column; gap:12px; margin-top: 8px; }
+    .opt{
+      width:100%;
+      padding: 14px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--btnBorder);
+      background: rgba(255,255,255,.55);
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .08s ease, background .12s ease;
+    }
+    .opt:active{ transform: scale(.99); }
+    .opt:hover{ background: rgba(255,255,255,.75); }
+    .note{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align:center;
+    }
     .center{ text-align:center; }
-    .row{
-      display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
-      margin-top:14px;
+    .bigTitle{
+      font-size: 30px;
+      font-weight: 900;
+      color: #374151;
     }
-    button{
-      border:0; padding:12px 16px; border-radius:14px; font-weight:800;
-      cursor:pointer; transition: transform .12s ease, opacity .12s ease;
-      box-shadow: 0 10px 22px rgba(0,0,0,.10);
-      user-select:none;
+    .sub{
+      margin-top:10px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #4b5563;
     }
-    button:active{ transform: scale(.98); }
-    .yes{ background: var(--green); color:#fff; }
-    .no { background: var(--red); color:#fff; }
-    .hint{ font-size:12px; opacity:.72; margin-top:10px; }
-    .small{ font-size:12px; opacity:.65; margin-top:12px; }
-    .big{ font-size:34px; margin-top:6px; }
-    .hearts{
-      position:absolute; inset:0; pointer-events:none; opacity:.25;
-      background-image:
-        radial-gradient(circle at 10% 20%, rgba(236,72,153,.25) 0 12px, transparent 13px),
-        radial-gradient(circle at 90% 30%, rgba(236,72,153,.18) 0 10px, transparent 11px),
-        radial-gradient(circle at 30% 85%, rgba(236,72,153,.16) 0 14px, transparent 15px);
-      filter: blur(.2px);
-    }
-    /* Confetti */
-    .confetti{
-      position:absolute; left:0; top:0; width:100%; height:100%;
+
+    /* Overlay like "Hamayya! Noted." / funny messages */
+    .toast{
+      position:absolute;
+      left: 50%;
+      top: 55%;
+      transform: translate(-50%, -50%);
+      font-weight: 900;
+      font-size: 34px;
+      padding: 10px 16px;
+      border-radius: 14px;
+      color: rgba(255,200,0,.95);
+      text-shadow: 0 10px 24px rgba(0,0,0,.28);
+      opacity: 0;
       pointer-events:none;
+      transition: opacity .12s ease, transform .12s ease;
+      white-space: nowrap;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,.25));
     }
-    .piece{
-      position:absolute; top:-10px; width:8px; height:14px; border-radius:2px;
-      animation: fall 1.2s linear forwards;
-      opacity:.9;
+    .toast.show{
+      opacity: 1;
+      transform: translate(-50%, -55%) scale(1.02);
     }
-    @keyframes fall{
-      to{ transform: translateY(110vh) rotate(260deg); opacity:0.95; }
+
+    /* Final Valentine gate (YES/NO) */
+    .row{
+      display:flex;
+      gap: 12px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top: 16px;
+      position: relative;
+      min-height: 60px;
+    }
+    .yesBtn,.noBtn{
+      border: 0;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 900;
+      color: #fff;
+      cursor:pointer;
+      box-shadow: 0 12px 24px rgba(0,0,0,.18);
+    }
+    .yesBtn{ background: #22c55e; }
+    .noBtn{ background: #ef4444; position:absolute; }
+    .hint{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align:center;
     }
   </style>
 </head>
 <body>
-  <div class="card" id="card">
-    <div class="hearts"></div>
-    <div id="screen"></div>
+  <div class="wrap">
+    <div class="scorebar" id="scorebar">Score: 0/4</div>
+    <div class="card" id="card">
+      <div class="toast" id="toast"></div>
+      <div id="screen"></div>
+    </div>
   </div>
 
 <script>
-  // ✅ Customize these two lines
-  const herName  = "My Love";
-  const yourName = "Raghav";
+  /***********************
+   * Customize these
+   ***********************/
+  const photoFile = "photo.jpg"; // put your couple photo as photo.jpg in same folder
+  const correctAnswers = {
+    q1: "Jan 28",
+    q2: "Chocolates",
+    q3: "Japan",
+    q4: "Wayanad" // change to your real place
+  };
 
-  // Reel-style: multiple questions, mixed funny + romantic
-  // "dodgeNo: true" means NO button dodges like the reel
-  const steps = [
+  /***********************
+   * Reel-style quiz config
+   ***********************/
+  const questions = [
     {
-      title: "Question 1",
-      q: "Will you be my Valentine? 💖",
-      sub: "(Try tapping NO… if you can 😌)",
-      dodgeNo: true
+      id: "q1",
+      text: "When did I first fell for you?",
+      options: ["Dec 12", "Jan 28", "Feb 14", "I Don't remember 🥺"]
     },
     {
-      title: "Question 2",
-      q: "Do you promise not to get angry if I steal a bite from your plate? 🍟",
-      sub: "Only YES or NO. No explanations 😄",
-      dodgeNo: false
+      id: "q2",
+      text: "What is the gift that I bought on first meet?",
+      options: ["Teddy", "Chocolates", "Flowers", "Never gifted"]
     },
     {
-      title: "Question 3",
-      q: "If I hug you for 10 minutes… will you still say it’s ‘too much’? 🤗",
-      sub: "Choose wisely 😇",
-      dodgeNo: true
+      id: "q3",
+      text: "Tell me where do you want to travel next?",
+      options: ["Kenya", "Greece", "Japan", "Switzerland"],
+      toastOnPick: "Hamayya! Noted."
     },
     {
-      title: "Question 4",
-      q: "Do you believe we’ll handle everything together—good days and bad days? ❤️",
-      sub: "This one is from my heart.",
-      dodgeNo: false
-    },
-    {
-      title: "Question 5",
-      q: "Can I officially be your forever person? 💍",
-      sub: "Final answer…",
-      dodgeNo: true
+      id: "q4",
+      text: "Where did we click this photo?",
+      image: photoFile,
+      options: ["Manali", "Ooty", "Wayanad", "Goa"]
     }
   ];
 
+  let score = 0;
+  let index = 0;
+
   const screen = document.getElementById("screen");
-  const card   = document.getElementById("card");
+  const scorebar = document.getElementById("scorebar");
+  const toast = document.getElementById("toast");
+  const card = document.getElementById("card");
 
-  let idx = 0;
-  let noDodges = 0;
-  let yesScale = 1;
-
-  function renderIntro(){
-    screen.innerHTML = `
-      <div class="center">
-        <div class="badge">Valentine’s Web Gift</div>
-        <h1>Hey ${herName} ❤️</h1>
-        <p>I made a tiny Valentine game for you.</p>
-        <p><b>Rules:</b> Only YES or NO 😄</p>
-        <div class="row">
-          <button class="yes" id="start">Start</button>
-        </div>
-        <div class="small">Made with ❤️ by ${yourName}</div>
-      </div>
-    `;
-    document.getElementById("start").onclick = () => {
-      idx = 0; renderStep();
-    };
+  function setScoreBar(){
+    // Reel shows Score: X/4 even while answering
+    scorebar.textContent = `Score: ${score}/4`;
   }
 
-  function renderStep(){
-    noDodges = 0;
-    yesScale = 1;
+  function showToast(text){
+    toast.textContent = text;
+    toast.classList.add("show");
+    setTimeout(()=> toast.classList.remove("show"), 650);
+  }
 
-    const s = steps[idx];
+  function renderQuestion(){
+    setScoreBar();
+    const q = questions[index];
+
+    const imgHtml = q.image ? `
+      <div class="imgBox">
+        <img src="${q.image}" alt="photo" onerror="this.style.display='none'; this.parentElement.textContent='(Add photo.jpg to show image)';" />
+      </div>` : "";
+
     screen.innerHTML = `
-      <div class="center">
-        <div class="badge">${s.title}</div>
-        <div class="big">${s.q}</div>
-        <p>${s.sub}</p>
-
-        <div class="row" id="btnRow" style="position:relative; min-height:70px;">
-          <button class="yes" id="yesBtn">YES</button>
-          <button class="no"  id="noBtn">NO</button>
+      <div>
+        <h2>${q.text}</h2>
+        ${imgHtml}
+        <div class="btns">
+          ${q.options.map(opt => `<button class="opt" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join("")}
         </div>
-
-        <div class="hint" id="hint"></div>
-        <div class="small">(${idx+1}/${steps.length})</div>
       </div>
     `;
 
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn  = document.getElementById("noBtn");
-    const hint   = document.getElementById("hint");
+    document.querySelectorAll(".opt").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const chosen = btn.getAttribute("data-opt");
+        const correct = correctAnswers[q.id];
 
-    yesBtn.style.transform = `scale(${yesScale})`;
+        // update score if correct (like reel "Score: 1/4", "2/4"...)
+        if (chosen === correct) score++;
 
-    yesBtn.onclick = () => {
-      popConfetti();
-      setTimeout(() => {
-        if (idx < steps.length - 1) { idx++; renderStep(); }
-        else { renderFinal(); }
-      }, 450);
-    };
+        // show special toast for travel question (reel shows "Hamayya! Noted.")
+        if (q.toastOnPick) showToast(q.toastOnPick);
 
-    // Reel-like NO behavior
-    if (s.dodgeNo){
-      const messages = [
-        "Nice try 😄",
-        "Are you sure? 👀",
-        "No option is currently unavailable 😌",
-        "Okay okay… press YES now 😭",
-        "Hehe 😇"
-      ];
+        // little playful toast if wrong (optional)
+        if (!q.toastOnPick && chosen !== correct) {
+          // matches vibe of reel (funny overlays)
+          showToast("🫠");
+        }
 
-      function dodge(){
-        noDodges++;
-        hint.textContent = messages[Math.min(noDodges-1, messages.length-1)];
-
-        // Make YES grow slightly each time (very reel-like)
-        yesScale = Math.min(1.65, yesScale + 0.10);
-        yesBtn.style.transform = `scale(${yesScale})`;
-
-        // Move NO within card bounds
-        const cardRect = card.getBoundingClientRect();
-        const btnRect  = noBtn.getBoundingClientRect();
-
-        const maxX = cardRect.width  - btnRect.width  - 30;
-        const maxY = cardRect.height - btnRect.height - 30;
-
-        const x = Math.max(12, Math.floor(Math.random() * maxX));
-        const y = Math.max(70, Math.floor(Math.random() * maxY)); // keep it below header
-
-        noBtn.style.position = "absolute";
-        noBtn.style.left = x + "px";
-        noBtn.style.top  = y + "px";
-      }
-
-      noBtn.addEventListener("mouseenter", dodge);
-      noBtn.addEventListener("click", dodge);
-    } else {
-      // Normal NO: just tease and go next
-      noBtn.onclick = () => {
-        hint.textContent = "Hmm 😅 I’ll ask again…";
+        // go next after short delay
         setTimeout(() => {
-          if (idx < steps.length - 1) { idx++; renderStep(); }
-          else { renderFinal(); }
-        }, 500);
-      };
-    }
+          index++;
+          if (index < questions.length) renderQuestion();
+          else renderResult();
+        }, q.toastOnPick ? 650 : 350);
+      });
+    });
   }
 
-  function renderFinal(){
+  function renderResult(){
+    setScoreBar();
     screen.innerHTML = `
       <div class="center">
-        <div class="badge">Result</div>
-        <h1>She said YES ❤️</h1>
-        <p>I’m smiling like an idiot right now 😄</p>
-        <p>Happy Valentine’s Day, ${herName} 💖</p>
-        <div class="row">
-          <button class="yes" id="again">Play again</button>
-        </div>
-        <div class="small">Screenshot this and send it to me 😌</div>
+        <div class="bigTitle">🎉 Yay! You're My Valentine! 🎉</div>
+        <div class="sub">Thank you for making my day special! ❤️</div>
+        <div class="note">Now one last thing…</div>
+        <button class="opt" id="continue">Continue</button>
       </div>
     `;
-    popConfetti(26);
-    document.getElementById("again").onclick = renderIntro;
+    document.getElementById("continue").onclick = renderValentineGate;
   }
 
-  function popConfetti(count=18){
-    const wrap = document.createElement("div");
-    wrap.className = "confetti";
-    for (let i=0;i<count;i++){
-      const p = document.createElement("div");
-      p.className = "piece";
-      // random positions + sizes
-      p.style.left = Math.floor(Math.random()*100) + "%";
-      p.style.width = (6 + Math.floor(Math.random()*6)) + "px";
-      p.style.height= (10 + Math.floor(Math.random()*10)) + "px";
-      p.style.borderRadius = (Math.random()>0.6 ? "999px" : "2px");
-      p.style.animationDuration = (900 + Math.floor(Math.random()*700)) + "ms";
-      // random pastel color (no hardcoded palette)
-      const hue = Math.floor(Math.random()*360);
-      p.style.background = `hsl(${hue} 90% 70%)`;
-      wrap.appendChild(p);
+  function renderValentineGate(){
+    // this is the reel part where NO is impossible to click
+    screen.innerHTML = `
+      <div class="center">
+        <div class="bigTitle">Will you be my Valentine? 💖</div>
+        <div class="row" id="row">
+          <button class="yesBtn" id="yes">YES</button>
+          <button class="noBtn" id="no">NO</button>
+        </div>
+        <div class="hint" id="hint">(Try clicking NO 😄)</div>
+      </div>
+    `;
+    const yes = document.getElementById("yes");
+    const no = document.getElementById("no");
+    const hint = document.getElementById("hint");
+
+    // initial NO position
+    moveNo();
+
+    let tries = 0;
+    const msgs = ["Nice try 😄", "Nope 😌", "Are you sure? 👀", "Just press YES 😂", "Hehe 😇"];
+
+    function moveNo(){
+      const cardRect = card.getBoundingClientRect();
+      const noRect = no.getBoundingClientRect();
+      const maxX = cardRect.width - noRect.width - 26;
+      const maxY = 120; // keep it near the top area like reel
+      const x = 10 + Math.floor(Math.random() * Math.max(10, maxX));
+      const y = 12 + Math.floor(Math.random() * Math.max(10, maxY));
+      no.style.left = x + "px";
+      no.style.top  = y + "px";
     }
-    card.appendChild(wrap);
-    setTimeout(()=> wrap.remove(), 1400);
+
+    function dodge(){
+      tries++;
+      hint.textContent = msgs[Math.min(tries-1, msgs.length-1)];
+      moveNo();
+    }
+
+    no.addEventListener("mouseenter", dodge);
+    no.addEventListener("click", dodge);
+
+    yes.onclick = () => {
+      showToast("💖");
+      setTimeout(() => {
+        screen.innerHTML = `
+          <div class="center">
+            <div class="bigTitle">YAYYY ❤️</div>
+            <div class="sub">Officially my Valentine 😌</div>
+            <div class="note">Screenshot this and send it to me 😄</div>
+          </div>
+        `;
+      }, 350);
+    };
   }
 
-  renderIntro();
+  function escapeHtml(str){
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // start
+  renderQuestion();
 </script>
 </body>
 </html>
