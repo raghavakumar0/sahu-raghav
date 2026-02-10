@@ -13,7 +13,6 @@
       --text:#1f2937;
       --muted:#6b7280;
       --btnBorder:#c7c2b6;
-      --accent:#4f46e5;
     }
     *{ box-sizing:border-box; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
     body{
@@ -45,25 +44,21 @@
       position: relative;
       overflow: hidden;
     }
-    h2{
-      margin: 6px 0 14px;
-      font-size: 24px;
-      line-height: 1.2;
-    }
+    h2{ margin: 6px 0 14px; font-size: 24px; line-height: 1.2; text-align:center; }
     .imgBox{
-      width: 240px;
-      height: 240px;
+      width: 240px; height: 240px;
       border-radius: 14px;
       overflow:hidden;
       margin: 10px auto 14px;
       border: 1px solid rgba(0,0,0,.12);
       background: rgba(0,0,0,.06);
       display:grid; place-items:center;
+      color: rgba(0,0,0,.55);
+      font-weight: 800;
+      padding: 10px;
+      text-align:center;
     }
-    .imgBox img{
-      width:100%; height:100%; object-fit:cover;
-      display:block;
-    }
+    .imgBox img{ width:100%; height:100%; object-fit:cover; display:block; }
     .btns{ display:flex; flex-direction:column; gap:12px; margin-top: 8px; }
     .opt{
       width:100%;
@@ -77,26 +72,12 @@
     }
     .opt:active{ transform: scale(.99); }
     .opt:hover{ background: rgba(255,255,255,.75); }
-    .note{
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
-      text-align:center;
-    }
+    .note{ margin-top: 10px; font-size: 12px; color: var(--muted); text-align:center; }
     .center{ text-align:center; }
-    .bigTitle{
-      font-size: 30px;
-      font-weight: 900;
-      color: #374151;
-    }
-    .sub{
-      margin-top:10px;
-      font-size: 18px;
-      font-weight: 800;
-      color: #4b5563;
-    }
+    .bigTitle{ font-size: 30px; font-weight: 900; color: #374151; }
+    .sub{ margin-top:10px; font-size: 18px; font-weight: 800; color: #4b5563; }
 
-    /* Overlay like "Hamayya! Noted." / funny messages */
+    /* Overlay toast */
     .toast{
       position:absolute;
       left: 50%;
@@ -111,15 +92,28 @@
       opacity: 0;
       pointer-events:none;
       transition: opacity .12s ease, transform .12s ease;
-      white-space: nowrap;
+      white-space: pre-line;
       filter: drop-shadow(0 6px 14px rgba(0,0,0,.25));
+      text-align:center;
     }
     .toast.show{
       opacity: 1;
       transform: translate(-50%, -55%) scale(1.02);
     }
 
-    /* Final Valentine gate (YES/NO) */
+    /* Error-style toast (like reel invalid choice) */
+    .toast.error{
+      color: rgba(255,80,80,.95);
+      background: rgba(0,0,0,.78);
+      border: 2px solid rgba(255,80,80,.7);
+      text-shadow: none;
+      font-size: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      width: min(560px, 92%);
+    }
+
+    /* Valentine gate */
     .row{
       display:flex;
       gap: 12px;
@@ -139,13 +133,8 @@
       box-shadow: 0 12px 24px rgba(0,0,0,.18);
     }
     .yesBtn{ background: #22c55e; }
-    .noBtn{ background: #ef4444; position:absolute; }
-    .hint{
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
-      text-align:center;
-    }
+    .noBtn{ background: #ef4444; }
+    .hint{ margin-top: 10px; font-size: 12px; color: var(--muted); text-align:center; }
   </style>
 </head>
 <body>
@@ -159,41 +148,48 @@
 
 <script>
   /***********************
-   * Customize these
+   * Customize these (YOU)
    ***********************/
-  const photoFile = "photo.jpg"; // put your couple photo as photo.jpg in same folder
+  const photoFile = "photo.jpg"; // put your couple photo as photo.jpg in same folder as index.html
+
+  // Correct answers for scoring (4 questions)
   const correctAnswers = {
-    q1: "Jan 28",
-    q2: "Chocolates",
-    q3: "Japan",
-    q4: "Wayanad" // change to your real place
+    q1: "05/11",
+    q2: "Roses",
+    q3: "Elevator",
+    q4: "Paris"
   };
 
   /***********************
-   * Reel-style quiz config
+   * Questions (personalized)
    ***********************/
   const questions = [
     {
       id: "q1",
       text: "When did I first fell for you?",
-      options: ["Dec 12", "Jan 28", "Feb 14", "I Don't remember 🥺"]
+      options: ["05/11", "11/05", "05/01", "I Don't remember 🥺"],
+      correctToast: "Awww 😭❤️",
+      wrongToast: "🫠 Memory test failed"
     },
     {
       id: "q2",
-      text: "What is the gift that I bought on first meet?",
-      options: ["Teddy", "Chocolates", "Flowers", "Never gifted"]
+      text: "What did I gift you on our first meet?",
+      options: ["Roses", "Chocolates", "Watch", "Nothing 😄"],
+      correctToast: "Correct 😌🌹",
+      wrongToast: "😡 I’ll deal with you after the test"
     },
     {
       id: "q3",
-      text: "Tell me where do you want to travel next?",
-      options: ["Kenya", "Greece", "Japan", "Switzerland"],
-      toastOnPick: "Hamayya! Noted."
+      text: "Where was our first kiss? 😏",
+      options: ["Car", "Elevator", "Parking", "I won't say 🙈"],
+      correctToast: "Ohooo 😏💋",
+      wrongToast: "👀 Wrong… but nice try"
     },
     {
       id: "q4",
-      text: "Where did we click this photo?",
-      image: photoFile,
-      options: ["Manali", "Ooty", "Wayanad", "Goa"]
+      text: "Where are we going first in Europe?",
+      options: ["Paris", "Rome", "Amsterdam", "Switzerland"],
+      toastOnPick: "Hamayya! Noted."
     }
   ];
 
@@ -206,20 +202,25 @@
   const card = document.getElementById("card");
 
   function setScoreBar(){
-    // Reel shows Score: X/4 even while answering
     scorebar.textContent = `Score: ${score}/4`;
   }
 
-  function showToast(text){
+  function showToast(text, variant){
+    toast.classList.remove("error");
+    if (variant === "error") toast.classList.add("error");
+
     toast.textContent = text;
     toast.classList.add("show");
-    setTimeout(()=> toast.classList.remove("show"), 650);
+
+    const duration = variant === "error" ? 1100 : 650;
+    setTimeout(()=> toast.classList.remove("show"), duration);
   }
 
   function renderQuestion(){
     setScoreBar();
     const q = questions[index];
 
+    // (Optional) You can enable photo for any question by setting q.image = photoFile
     const imgHtml = q.image ? `
       <div class="imgBox">
         <img src="${q.image}" alt="photo" onerror="this.style.display='none'; this.parentElement.textContent='(Add photo.jpg to show image)';" />
@@ -227,7 +228,7 @@
 
     screen.innerHTML = `
       <div>
-        <h2>${q.text}</h2>
+        <h2>${escapeHtml(q.text)}</h2>
         ${imgHtml}
         <div class="btns">
           ${q.options.map(opt => `<button class="opt" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join("")}
@@ -240,24 +241,20 @@
         const chosen = btn.getAttribute("data-opt");
         const correct = correctAnswers[q.id];
 
-        // update score if correct (like reel "Score: 1/4", "2/4"...)
         if (chosen === correct) score++;
 
-        // show special toast for travel question (reel shows "Hamayya! Noted.")
-        if (q.toastOnPick) showToast(q.toastOnPick);
-
-        // little playful toast if wrong (optional)
-        if (!q.toastOnPick && chosen !== correct) {
-          // matches vibe of reel (funny overlays)
-          showToast("🫠");
+        if (q.toastOnPick) {
+          showToast(q.toastOnPick);
+        } else {
+          if (chosen === correct) showToast(q.correctToast || "😌");
+          else showToast(q.wrongToast || "🫠");
         }
 
-        // go next after short delay
         setTimeout(() => {
           index++;
           if (index < questions.length) renderQuestion();
           else renderResult();
-        }, q.toastOnPick ? 650 : 350);
+        }, q.toastOnPick ? 650 : 420);
       });
     });
   }
@@ -276,46 +273,24 @@
   }
 
   function renderValentineGate(){
-    // this is the reel part where NO is impossible to click
     screen.innerHTML = `
       <div class="center">
         <div class="bigTitle">Will you be my Valentine? 💖</div>
-        <div class="row" id="row">
+        <div class="row">
           <button class="yesBtn" id="yes">YES</button>
           <button class="noBtn" id="no">NO</button>
         </div>
-        <div class="hint" id="hint">(Try clicking NO 😄)</div>
+        <div class="hint">(Try clicking NO 😄)</div>
       </div>
     `;
+
     const yes = document.getElementById("yes");
     const no = document.getElementById("no");
-    const hint = document.getElementById("hint");
 
-    // initial NO position
-    moveNo();
-
-    let tries = 0;
-    const msgs = ["Nice try 😄", "Nope 😌", "Are you sure? 👀", "Just press YES 😂", "Hehe 😇"];
-
-    function moveNo(){
-      const cardRect = card.getBoundingClientRect();
-      const noRect = no.getBoundingClientRect();
-      const maxX = cardRect.width - noRect.width - 26;
-      const maxY = 120; // keep it near the top area like reel
-      const x = 10 + Math.floor(Math.random() * Math.max(10, maxX));
-      const y = 12 + Math.floor(Math.random() * Math.max(10, maxY));
-      no.style.left = x + "px";
-      no.style.top  = y + "px";
-    }
-
-    function dodge(){
-      tries++;
-      hint.textContent = msgs[Math.min(tries-1, msgs.length-1)];
-      moveNo();
-    }
-
-    no.addEventListener("mouseenter", dodge);
-    no.addEventListener("click", dodge);
+    // Reel-style: NO is "invalid choice" (instead of dodging)
+    no.onclick = () => {
+      showToast("❌ Invalid choice.\nSystem has detected you are already my Valentine. ❤️", "error");
+    };
 
     yes.onclick = () => {
       showToast("💖");
@@ -324,10 +299,11 @@
           <div class="center">
             <div class="bigTitle">YAYYY ❤️</div>
             <div class="sub">Officially my Valentine 😌</div>
+            <div class="note">P.S. First gift after this quiz = a watch ⌚😉</div>
             <div class="note">Screenshot this and send it to me 😄</div>
           </div>
         `;
-      }, 350);
+      }, 420);
     };
   }
 
@@ -340,7 +316,6 @@
       .replaceAll("'","&#039;");
   }
 
-  // start
   renderQuestion();
 </script>
 </body>
