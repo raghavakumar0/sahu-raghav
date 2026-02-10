@@ -15,15 +15,22 @@
   --text:#374151;
   --muted:#6b7280;
   --border:#f3c1d9;
+  --goodBg:#fff;
+  --goodBorder:#f472b6;
+  --goodText:#be185d;
+  --badBg:#fff;
+  --badBorder:#fb7185;
+  --badText:#7c2d12;
+  --errBg:#111827;
+  --errBorder:#fb7185;
+  --errText:#fecaca;
 }
 
-/* Reset */
 *{
   box-sizing:border-box;
   font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial;
 }
 
-/* Background */
 body{
   margin:0;
   min-height:100vh;
@@ -42,46 +49,85 @@ body{
   position:absolute;
   color:#f472b6;
   font-size:18px;
-  animation: float 8s linear infinite;
-  opacity:.6;
+  animation: float 9s linear infinite;
+  opacity:.55;
+  user-select:none;
 }
 @keyframes float{
-  from{ transform:translateY(110vh); }
-  to{ transform:translateY(-10vh); }
+  from{ transform:translateY(110vh) translateX(0); }
+  to{ transform:translateY(-10vh) translateX(22px); }
 }
 
-/* Layout */
 .wrap{ width:min(640px,100%); z-index:1; }
 
+.topbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+
 .scorebar{
+  flex:1;
   background:#fff;
   border-radius:999px;
-  padding:10px;
+  padding:10px 12px;
   text-align:center;
-  font-weight:800;
+  font-weight:900;
   color:var(--pink);
-  margin-bottom:14px;
   border:1px solid var(--border);
 }
+
+/* Music button */
+.musicBtn{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:10px 12px;
+  font-weight:900;
+  cursor:pointer;
+  color:#be185d;
+  white-space:nowrap;
+}
+.musicBtn:active{ transform:scale(.98); }
 
 .card{
   background:var(--card);
   border-radius:22px;
-  padding:22px;
-  box-shadow:0 20px 45px rgba(236,72,153,.25);
+  padding:18px;
+  box-shadow:0 20px 45px rgba(236,72,153,.22);
   border:1px solid var(--border);
   position:relative;
   overflow:hidden;
 }
 
-/* Question */
+/* Message banner ABOVE question */
+.msg{
+  width:100%;
+  border-radius:16px;
+  padding:12px 14px;
+  font-weight:900;
+  text-align:center;
+  margin-bottom:12px;
+  opacity:0;
+  transform: translateY(-4px);
+  transition: .18s ease;
+  border:2px solid transparent;
+  white-space: pre-line;
+}
+.msg.show{ opacity:1; transform: translateY(0); }
+.msg.good{ background:var(--goodBg); color:var(--goodText); border-color:var(--goodBorder); }
+.msg.bad{ background:var(--badBg); color:var(--badText); border-color:var(--badBorder); }
+.msg.error{ background:var(--errBg); color:var(--errText); border-color:var(--errBorder); font-size:14px; }
+
 h2{
   text-align:center;
   font-size:24px;
   color:#be185d;
+  margin: 4px 0 12px;
 }
 
-/* Image */
 .imgBox{
   width:230px;
   height:230px;
@@ -89,14 +135,20 @@ h2{
   border-radius:18px;
   overflow:hidden;
   border:2px solid #f9a8d4;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  color:var(--muted);
+  font-weight:800;
+  font-size:12px;
 }
 .imgBox img{
   width:100%;
   height:100%;
   object-fit:cover;
+  display:block;
 }
 
-/* Options */
 .btns{
   display:flex;
   flex-direction:column;
@@ -107,7 +159,7 @@ h2{
   border-radius:14px;
   border:1px solid var(--border);
   background:#fff;
-  font-weight:700;
+  font-weight:800;
   cursor:pointer;
   transition:.15s;
 }
@@ -115,45 +167,12 @@ h2{
   background:#fdf2f8;
   transform:scale(1.01);
 }
-
-/* Toasts */
-.toast{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  padding:14px 22px;
-  border-radius:18px;
-  font-size:22px;
-  font-weight:800;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-  text-align:center;
+.opt:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
 }
 
-.toast.show{ opacity:1; }
-
-.toast.good{
-  background:#fff;
-  color:#be185d;
-  border:2px solid #f472b6;
-}
-
-.toast.bad{
-  background:#fff;
-  color:#7c2d12;
-  border:2px solid #fb7185;
-}
-
-.toast.error{
-  background:#111827;
-  color:#fecaca;
-  border:2px solid #fb7185;
-  font-size:16px;
-}
-
-/* Center text */
 .center{text-align:center;}
 .bigTitle{
   font-size:30px;
@@ -166,7 +185,6 @@ h2{
   color:#6b7280;
 }
 
-/* Valentine Gate */
 .row{
   display:flex;
   gap:16px;
@@ -189,37 +207,41 @@ h2{
   color:var(--muted);
   margin-top:10px;
 }
-
-/* Hearts generation */
-.hearts span{
-  position:absolute;
-  bottom:-20px;
-}
 </style>
 </head>
 
 <body>
 
 <!-- Floating hearts -->
-<div class="hearts">
-  <span class="heart" style="left:10%">💖</span>
-  <span class="heart" style="left:30%;animation-delay:2s">💗</span>
-  <span class="heart" style="left:50%;animation-delay:4s">💕</span>
-  <span class="heart" style="left:70%;animation-delay:1s">💓</span>
-  <span class="heart" style="left:90%;animation-delay:3s">💞</span>
-</div>
+<span class="heart" style="left:8%;  animation-delay:0s;">💖</span>
+<span class="heart" style="left:22%; animation-delay:2s;">💗</span>
+<span class="heart" style="left:40%; animation-delay:4s;">💕</span>
+<span class="heart" style="left:60%; animation-delay:1s;">💓</span>
+<span class="heart" style="left:78%; animation-delay:3s;">💞</span>
+<span class="heart" style="left:92%; animation-delay:5s;">💘</span>
 
 <div class="wrap">
-  <div class="scorebar" id="scorebar">Score: 0/4</div>
+  <div class="topbar">
+    <div class="scorebar" id="scorebar">Score: 0/4</div>
+    <button class="musicBtn" id="musicBtn">▶ Music</button>
+  </div>
+
   <div class="card">
-    <div class="toast" id="toast"></div>
+    <div class="msg" id="msg"></div>
     <div id="screen"></div>
   </div>
 </div>
 
-<script>
-const photoFile = "photo.jpg";
+<!-- Background music (Pixabay direct link) -->
+<audio id="bgm" loop preload="auto">
+  <source src="https://cdn.pixabay.com/audio/2024/12/21/audio_277935.mp3" type="audio/mpeg">
+</audio>
 
+<script>
+/** Files */
+const photoFile = "photo.jpg"; // put your couple photo as photo.jpg in same repo folder as index.html
+
+/** Correct answers */
 const correctAnswers = {
   q1:"05/11",
   q2:"Roses",
@@ -227,110 +249,208 @@ const correctAnswers = {
   q4:"Paris"
 };
 
+/** Questions (personalized) */
 const questions = [
   {
     id:"q1",
-    text:"When did I decide on you? 💕",
-    options:["April 13","April 26","May 11","I don't remember 🥺"],
-    good:"Awww ❤️",
-    bad:"Hmm… think again 😄"
+    text:"When did I first fall for you? 💕",
+    options:["05/11","11/05","05/01","I don't remember 🥺"],
+    good:"Awww ❤️ You remembered!",
+    bad:"No no 😄 One more chance…"
   },
   {
     id:"q2",
     text:"What did I gift you on our first meet? 🌹",
     options:["Roses","Chocolates","Watch","Nothing 😅"],
     good:"Correct 🌹",
-    bad:"😡 I’ll remember this"
+    bad:"😡 Wrong! One more chance…"
   },
   {
     id:"q3",
     text:"Where was our first kiss? 😏",
     options:["Car","Elevator","Parking","Secret 🙈"],
     good:"Ohooo 💋",
-    bad:"👀 Wrong guess"
+    bad:"👀 Wrong guess… try again"
   },
   {
     id:"q4",
     text:"Where are we going first in Europe? ✈️",
     options:["Paris","Rome","Amsterdam","Zurich"],
     good:"Paris it is 💕",
-    bad:"Still cute 😌"
+    bad:"Hamayya 😄 pick again",
+    showImage:true
   }
 ];
 
-let score=0,index=0;
-const screen=document.getElementById("screen");
-const toast=document.getElementById("toast");
-const scorebar=document.getElementById("scorebar");
+let score = 0;
+let index = 0;
 
-function showToast(msg,type){
-  toast.className="toast "+type;
-  toast.textContent=msg;
-  toast.classList.add("show");
-  setTimeout(()=>toast.classList.remove("show"),700);
+// attempts per question: 0 = first try, 1 = second try used
+const attempts = Object.fromEntries(questions.map(q => [q.id, 0]));
+
+const screen   = document.getElementById("screen");
+const msg      = document.getElementById("msg");
+const scorebar = document.getElementById("scorebar");
+
+/** Message banner */
+function showMsg(text, type){
+  msg.className = "msg " + type;
+  msg.textContent = text;
+  msg.classList.add("show");
+  setTimeout(() => msg.classList.remove("show"), 1200);
+}
+function clearMsg(){
+  msg.className = "msg";
+  msg.textContent = "";
+  msg.classList.remove("show");
 }
 
+/** Render */
 function render(){
-  scorebar.textContent=`Score: ${score}/4`;
-  const q=questions[index];
-  screen.innerHTML=`
-    <h2>${q.text}</h2>
-    ${q.id==="q4"?`<div class="imgBox"><img src="${photoFile}" /></div>`:""}
+  scorebar.textContent = `Score: ${score}/4`;
+  clearMsg();
+
+  const q = questions[index];
+
+  const imgHtml = q.showImage ? `
+    <div class="imgBox">
+      <img src="${photoFile}" alt="photo"
+        onerror="this.style.display='none'; this.parentElement.textContent='(Add photo.jpg in repo to show image)'"/>
+    </div>` : ``;
+
+  screen.innerHTML = `
+    <h2>${escapeHtml(q.text)}</h2>
+    ${imgHtml}
     <div class="btns">
-      ${q.options.map(o=>`<button class="opt">${o}</button>`).join("")}
+      ${q.options.map(o => `<button class="opt" data-opt="${escapeHtml(o)}">${escapeHtml(o)}</button>`).join("")}
     </div>
+    <div class="note center">${index+1}/${questions.length}</div>
   `;
-  document.querySelectorAll(".opt").forEach(b=>{
-    b.onclick=()=>{
-      if(b.textContent===correctAnswers[q.id]){
-        score++; showToast(q.good,"good");
-      }else{
-        showToast(q.bad,"bad");
-      }
-      setTimeout(()=>{
-        index++;
-        if(index<questions.length) render();
-        else result();
-      },600);
-    };
+
+  document.querySelectorAll(".opt").forEach(btn => {
+    btn.onclick = () => onPick(btn);
   });
 }
 
+/** Handle option click with "second chance" logic */
+function onPick(btn){
+  const q = questions[index];
+  const chosen = btn.getAttribute("data-opt");
+  const correct = correctAnswers[q.id];
+
+  if (chosen === correct){
+    // add score ONLY if correct on first try
+    if (attempts[q.id] === 0) score += 1;
+    showMsg(q.good, "good");
+    goNext(650);
+    return;
+  }
+
+  // wrong
+  if (attempts[q.id] === 0){
+    // First wrong → give another chance, disable that wrong option
+    attempts[q.id] = 1;
+    btn.disabled = true;
+    showMsg(q.bad, "bad");
+    return; // stay on same question
+  }
+
+  // Second wrong → move on (no score)
+  showMsg("Okay okay 😄 next one…", "bad");
+  goNext(650);
+}
+
+function goNext(delay){
+  setTimeout(() => {
+    index++;
+    if (index < questions.length) render();
+    else result();
+  }, delay);
+}
+
+/** Result */
 function result(){
-  screen.innerHTML=`
+  scorebar.textContent = `Score: ${score}/4`;
+  screen.innerHTML = `
     <div class="center">
       <div class="bigTitle">You're My Valentine 💖</div>
       <div class="sub">Thank you for choosing me ❤️</div>
-      <button class="opt" onclick="gate()">Continue</button>
+      <button class="opt" id="continue">Continue</button>
+      <div class="note">Now one last thing…</div>
     </div>
   `;
+  document.getElementById("continue").onclick = gate;
 }
 
+/** Valentine Gate */
 function gate(){
-  screen.innerHTML=`
+  clearMsg();
+  screen.innerHTML = `
     <div class="center">
       <div class="bigTitle">Will you be my Valentine? 💍</div>
       <div class="row">
-        <button class="yesBtn" onclick="final()">YES</button>
-        <button class="noBtn" onclick="showToast('❌ Invalid choice.\\nSystem says you are already mine ❤️','error')">NO</button>
+        <button class="yesBtn" id="yes">YES</button>
+        <button class="noBtn" id="no">NO</button>
       </div>
       <div class="note">(There is only one correct answer 😌)</div>
     </div>
   `;
+
+  document.getElementById("no").onclick = () => {
+    showMsg("❌ Invalid choice.\nSystem has detected you are already my Valentine. ❤️", "error");
+  };
+
+  document.getElementById("yes").onclick = () => {
+    showMsg("💖 YAYYYY 💖", "good");
+    setTimeout(() => {
+      screen.innerHTML = `
+        <div class="center">
+          <div class="bigTitle">Forever Us ❤️</div>
+          <div class="sub">Screenshot this & send it to me 😘</div>
+          <div class="note">P.S. First gift after this quiz = a watch ⌚😉</div>
+        </div>
+      `;
+    }, 700);
+  };
 }
 
-function final(){
-  showToast("💖 YAYYYY 💖","good");
-  setTimeout(()=>{
-    screen.innerHTML=`
-      <div class="center">
-        <div class="bigTitle">Forever Us ❤️</div>
-        <div class="sub">Screenshot this & send it to me 😘</div>
-      </div>
-    `;
-  },700);
+/** Escape HTML */
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
+/** Music control */
+const bgm = document.getElementById("bgm");
+const musicBtn = document.getElementById("musicBtn");
+let musicOn = false;
+
+// lower volume so it feels like background
+bgm.volume = 0.25;
+
+musicBtn.onclick = async () => {
+  try {
+    if (!musicOn){
+      await bgm.play(); // requires user click (this is the click)
+      musicOn = true;
+      musicBtn.textContent = "⏸ Music";
+      showMsg("Music on 🎶", "good");
+    } else {
+      bgm.pause();
+      musicOn = false;
+      musicBtn.textContent = "▶ Music";
+      showMsg("Music off", "bad");
+    }
+  } catch (e){
+    showMsg("Music couldn't play on this browser.\nTry tapping again or use Chrome.", "bad");
+  }
+};
+
+// Start app
 render();
 </script>
 
