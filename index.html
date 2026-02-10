@@ -1,322 +1,338 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Valentine Quiz 💖</title>
-  <style>
-    :root{
-      --bgA:#5b5ce6;
-      --bgB:#7b3fe4;
-      --card:#f3f0e6;
-      --card2:#efe9db;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --btnBorder:#c7c2b6;
-    }
-    *{ box-sizing:border-box; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-    body{
-      margin:0; min-height:100vh; display:grid; place-items:center; padding:18px;
-      background: radial-gradient(circle at 20% 10%, rgba(255,255,255,.18), transparent 45%),
-                  radial-gradient(circle at 80% 25%, rgba(255,255,255,.12), transparent 50%),
-                  linear-gradient(135deg, var(--bgA), var(--bgB));
-      color: var(--text);
-    }
-    .wrap{ width:min(640px, 100%); }
-    .scorebar{
-      width:100%;
-      background: rgba(255,255,255,.22);
-      border-radius: 999px;
-      padding: 12px 16px;
-      text-align:center;
-      color: rgba(255,255,255,.95);
-      font-weight: 800;
-      letter-spacing:.3px;
-      margin-bottom:14px;
-      backdrop-filter: blur(6px);
-    }
-    .card{
-      background: linear-gradient(180deg, var(--card), var(--card2));
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 16px 40px rgba(0,0,0,.18);
-      border: 1px solid rgba(0,0,0,.08);
-      position: relative;
-      overflow: hidden;
-    }
-    h2{ margin: 6px 0 14px; font-size: 24px; line-height: 1.2; text-align:center; }
-    .imgBox{
-      width: 240px; height: 240px;
-      border-radius: 14px;
-      overflow:hidden;
-      margin: 10px auto 14px;
-      border: 1px solid rgba(0,0,0,.12);
-      background: rgba(0,0,0,.06);
-      display:grid; place-items:center;
-      color: rgba(0,0,0,.55);
-      font-weight: 800;
-      padding: 10px;
-      text-align:center;
-    }
-    .imgBox img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .btns{ display:flex; flex-direction:column; gap:12px; margin-top: 8px; }
-    .opt{
-      width:100%;
-      padding: 14px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--btnBorder);
-      background: rgba(255,255,255,.55);
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform .08s ease, background .12s ease;
-    }
-    .opt:active{ transform: scale(.99); }
-    .opt:hover{ background: rgba(255,255,255,.75); }
-    .note{ margin-top: 10px; font-size: 12px; color: var(--muted); text-align:center; }
-    .center{ text-align:center; }
-    .bigTitle{ font-size: 30px; font-weight: 900; color: #374151; }
-    .sub{ margin-top:10px; font-size: 18px; font-weight: 800; color: #4b5563; }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>My Valentine 💖</title>
 
-    /* Overlay toast */
-    .toast{
-      position:absolute;
-      left: 50%;
-      top: 55%;
-      transform: translate(-50%, -50%);
-      font-weight: 900;
-      font-size: 34px;
-      padding: 10px 16px;
-      border-radius: 14px;
-      color: rgba(255,200,0,.95);
-      text-shadow: 0 10px 24px rgba(0,0,0,.28);
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity .12s ease, transform .12s ease;
-      white-space: pre-line;
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,.25));
-      text-align:center;
-    }
-    .toast.show{
-      opacity: 1;
-      transform: translate(-50%, -55%) scale(1.02);
-    }
+<style>
+:root{
+  --pink:#ec4899;
+  --rose:#fb7185;
+  --bg1:#fde7f3;
+  --bg2:#fbcfe8;
+  --card:#fffafc;
+  --text:#374151;
+  --muted:#6b7280;
+  --border:#f3c1d9;
+}
 
-    /* Error-style toast (like reel invalid choice) */
-    .toast.error{
-      color: rgba(255,80,80,.95);
-      background: rgba(0,0,0,.78);
-      border: 2px solid rgba(255,80,80,.7);
-      text-shadow: none;
-      font-size: 18px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      width: min(560px, 92%);
-    }
+/* Reset */
+*{
+  box-sizing:border-box;
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
 
-    /* Valentine gate */
-    .row{
-      display:flex;
-      gap: 12px;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-top: 16px;
-      position: relative;
-      min-height: 60px;
-    }
-    .yesBtn,.noBtn{
-      border: 0;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-weight: 900;
-      color: #fff;
-      cursor:pointer;
-      box-shadow: 0 12px 24px rgba(0,0,0,.18);
-    }
-    .yesBtn{ background: #22c55e; }
-    .noBtn{ background: #ef4444; }
-    .hint{ margin-top: 10px; font-size: 12px; color: var(--muted); text-align:center; }
-  </style>
+/* Background */
+body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:18px;
+  background:
+    radial-gradient(circle at 20% 20%, #fff 0%, transparent 35%),
+    radial-gradient(circle at 80% 10%, #fff 0%, transparent 30%),
+    linear-gradient(135deg, var(--bg1), var(--bg2));
+  overflow:hidden;
+}
+
+/* Floating hearts */
+.heart{
+  position:absolute;
+  color:#f472b6;
+  font-size:18px;
+  animation: float 8s linear infinite;
+  opacity:.6;
+}
+@keyframes float{
+  from{ transform:translateY(110vh); }
+  to{ transform:translateY(-10vh); }
+}
+
+/* Layout */
+.wrap{ width:min(640px,100%); z-index:1; }
+
+.scorebar{
+  background:#fff;
+  border-radius:999px;
+  padding:10px;
+  text-align:center;
+  font-weight:800;
+  color:var(--pink);
+  margin-bottom:14px;
+  border:1px solid var(--border);
+}
+
+.card{
+  background:var(--card);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 20px 45px rgba(236,72,153,.25);
+  border:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+
+/* Question */
+h2{
+  text-align:center;
+  font-size:24px;
+  color:#be185d;
+}
+
+/* Image */
+.imgBox{
+  width:230px;
+  height:230px;
+  margin:14px auto;
+  border-radius:18px;
+  overflow:hidden;
+  border:2px solid #f9a8d4;
+}
+.imgBox img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* Options */
+.btns{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.opt{
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#fff;
+  font-weight:700;
+  cursor:pointer;
+  transition:.15s;
+}
+.opt:hover{
+  background:#fdf2f8;
+  transform:scale(1.01);
+}
+
+/* Toasts */
+.toast{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  padding:14px 22px;
+  border-radius:18px;
+  font-size:22px;
+  font-weight:800;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  text-align:center;
+}
+
+.toast.show{ opacity:1; }
+
+.toast.good{
+  background:#fff;
+  color:#be185d;
+  border:2px solid #f472b6;
+}
+
+.toast.bad{
+  background:#fff;
+  color:#7c2d12;
+  border:2px solid #fb7185;
+}
+
+.toast.error{
+  background:#111827;
+  color:#fecaca;
+  border:2px solid #fb7185;
+  font-size:16px;
+}
+
+/* Center text */
+.center{text-align:center;}
+.bigTitle{
+  font-size:30px;
+  font-weight:900;
+  color:#be185d;
+}
+.sub{
+  font-size:18px;
+  margin-top:8px;
+  color:#6b7280;
+}
+
+/* Valentine Gate */
+.row{
+  display:flex;
+  gap:16px;
+  justify-content:center;
+  margin-top:20px;
+}
+.yesBtn,.noBtn{
+  padding:12px 22px;
+  border-radius:14px;
+  font-weight:900;
+  border:none;
+  cursor:pointer;
+  color:#fff;
+}
+.yesBtn{ background:#22c55e; }
+.noBtn{ background:#ef4444; }
+
+.note{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:10px;
+}
+
+/* Hearts generation */
+.hearts span{
+  position:absolute;
+  bottom:-20px;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="scorebar" id="scorebar">Score: 0/4</div>
-    <div class="card" id="card">
-      <div class="toast" id="toast"></div>
-      <div id="screen"></div>
-    </div>
+
+<!-- Floating hearts -->
+<div class="hearts">
+  <span class="heart" style="left:10%">💖</span>
+  <span class="heart" style="left:30%;animation-delay:2s">💗</span>
+  <span class="heart" style="left:50%;animation-delay:4s">💕</span>
+  <span class="heart" style="left:70%;animation-delay:1s">💓</span>
+  <span class="heart" style="left:90%;animation-delay:3s">💞</span>
+</div>
+
+<div class="wrap">
+  <div class="scorebar" id="scorebar">Score: 0/4</div>
+  <div class="card">
+    <div class="toast" id="toast"></div>
+    <div id="screen"></div>
   </div>
+</div>
 
 <script>
-  /***********************
-   * Customize these (YOU)
-   ***********************/
-  const photoFile = "photo.jpg"; // put your couple photo as photo.jpg in same folder as index.html
+const photoFile = "photo.jpg";
 
-  // Correct answers for scoring (4 questions)
-  const correctAnswers = {
-    q1: "05/11",
-    q2: "Roses",
-    q3: "Elevator",
-    q4: "Paris"
-  };
+const correctAnswers = {
+  q1:"05/11",
+  q2:"Roses",
+  q3:"Elevator",
+  q4:"Paris"
+};
 
-  /***********************
-   * Questions (personalized)
-   ***********************/
-  const questions = [
-    {
-      id: "q1",
-      text: "When did I first fell for you?",
-      options: ["05/11", "11/05", "05/01", "I Don't remember 🥺"],
-      correctToast: "Awww 😭❤️",
-      wrongToast: "🫠 Memory test failed"
-    },
-    {
-      id: "q2",
-      text: "What did I gift you on our first meet?",
-      options: ["Roses", "Chocolates", "Watch", "Nothing 😄"],
-      correctToast: "Correct 😌🌹",
-      wrongToast: "😡 I’ll deal with you after the test"
-    },
-    {
-      id: "q3",
-      text: "Where was our first kiss? 😏",
-      options: ["Car", "Elevator", "Parking", "I won't say 🙈"],
-      correctToast: "Ohooo 😏💋",
-      wrongToast: "👀 Wrong… but nice try"
-    },
-    {
-      id: "q4",
-      text: "Where are we going first in Europe?",
-      options: ["Paris", "Rome", "Amsterdam", "Switzerland"],
-      toastOnPick: "Hamayya! Noted."
-    }
-  ];
-
-  let score = 0;
-  let index = 0;
-
-  const screen = document.getElementById("screen");
-  const scorebar = document.getElementById("scorebar");
-  const toast = document.getElementById("toast");
-  const card = document.getElementById("card");
-
-  function setScoreBar(){
-    scorebar.textContent = `Score: ${score}/4`;
+const questions = [
+  {
+    id:"q1",
+    text:"When did I first fall for you? 💕",
+    options:["05/11","11/05","05/01","I don't remember 🥺"],
+    good:"Awww ❤️",
+    bad:"Hmm… think again 😄"
+  },
+  {
+    id:"q2",
+    text:"What did I gift you on our first meet? 🌹",
+    options:["Roses","Chocolates","Watch","Nothing 😅"],
+    good:"Correct 🌹",
+    bad:"😡 I’ll remember this"
+  },
+  {
+    id:"q3",
+    text:"Where was our first kiss? 😏",
+    options:["Car","Elevator","Parking","Secret 🙈"],
+    good:"Ohooo 💋",
+    bad:"👀 Wrong guess"
+  },
+  {
+    id:"q4",
+    text:"Where are we going first in Europe? ✈️",
+    options:["Paris","Rome","Amsterdam","Zurich"],
+    good:"Paris it is 💕",
+    bad:"Still cute 😌"
   }
+];
 
-  function showToast(text, variant){
-    toast.classList.remove("error");
-    if (variant === "error") toast.classList.add("error");
+let score=0,index=0;
+const screen=document.getElementById("screen");
+const toast=document.getElementById("toast");
+const scorebar=document.getElementById("scorebar");
 
-    toast.textContent = text;
-    toast.classList.add("show");
+function showToast(msg,type){
+  toast.className="toast "+type;
+  toast.textContent=msg;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),700);
+}
 
-    const duration = variant === "error" ? 1100 : 650;
-    setTimeout(()=> toast.classList.remove("show"), duration);
-  }
-
-  function renderQuestion(){
-    setScoreBar();
-    const q = questions[index];
-
-    // (Optional) You can enable photo for any question by setting q.image = photoFile
-    const imgHtml = q.image ? `
-      <div class="imgBox">
-        <img src="${q.image}" alt="photo" onerror="this.style.display='none'; this.parentElement.textContent='(Add photo.jpg to show image)';" />
-      </div>` : "";
-
-    screen.innerHTML = `
-      <div>
-        <h2>${escapeHtml(q.text)}</h2>
-        ${imgHtml}
-        <div class="btns">
-          ${q.options.map(opt => `<button class="opt" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join("")}
-        </div>
-      </div>
-    `;
-
-    document.querySelectorAll(".opt").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const chosen = btn.getAttribute("data-opt");
-        const correct = correctAnswers[q.id];
-
-        if (chosen === correct) score++;
-
-        if (q.toastOnPick) {
-          showToast(q.toastOnPick);
-        } else {
-          if (chosen === correct) showToast(q.correctToast || "😌");
-          else showToast(q.wrongToast || "🫠");
-        }
-
-        setTimeout(() => {
-          index++;
-          if (index < questions.length) renderQuestion();
-          else renderResult();
-        }, q.toastOnPick ? 650 : 420);
-      });
-    });
-  }
-
-  function renderResult(){
-    setScoreBar();
-    screen.innerHTML = `
-      <div class="center">
-        <div class="bigTitle">🎉 Yay! You're My Valentine! 🎉</div>
-        <div class="sub">Thank you for making my day special! ❤️</div>
-        <div class="note">Now one last thing…</div>
-        <button class="opt" id="continue">Continue</button>
-      </div>
-    `;
-    document.getElementById("continue").onclick = renderValentineGate;
-  }
-
-  function renderValentineGate(){
-    screen.innerHTML = `
-      <div class="center">
-        <div class="bigTitle">Will you be my Valentine? 💖</div>
-        <div class="row">
-          <button class="yesBtn" id="yes">YES</button>
-          <button class="noBtn" id="no">NO</button>
-        </div>
-        <div class="hint">(Try clicking NO 😄)</div>
-      </div>
-    `;
-
-    const yes = document.getElementById("yes");
-    const no = document.getElementById("no");
-
-    // Reel-style: NO is "invalid choice" (instead of dodging)
-    no.onclick = () => {
-      showToast("❌ Invalid choice.\nSystem has detected you are already my Valentine. ❤️", "error");
+function render(){
+  scorebar.textContent=`Score: ${score}/4`;
+  const q=questions[index];
+  screen.innerHTML=`
+    <h2>${q.text}</h2>
+    ${q.id==="q4"?`<div class="imgBox"><img src="${photoFile}" /></div>`:""}
+    <div class="btns">
+      ${q.options.map(o=>`<button class="opt">${o}</button>`).join("")}
+    </div>
+  `;
+  document.querySelectorAll(".opt").forEach(b=>{
+    b.onclick=()=>{
+      if(b.textContent===correctAnswers[q.id]){
+        score++; showToast(q.good,"good");
+      }else{
+        showToast(q.bad,"bad");
+      }
+      setTimeout(()=>{
+        index++;
+        if(index<questions.length) render();
+        else result();
+      },600);
     };
+  });
+}
 
-    yes.onclick = () => {
-      showToast("💖");
-      setTimeout(() => {
-        screen.innerHTML = `
-          <div class="center">
-            <div class="bigTitle">YAYYY ❤️</div>
-            <div class="sub">Officially my Valentine 😌</div>
-            <div class="note">P.S. First gift after this quiz = a watch ⌚😉</div>
-            <div class="note">Screenshot this and send it to me 😄</div>
-          </div>
-        `;
-      }, 420);
-    };
-  }
+function result(){
+  screen.innerHTML=`
+    <div class="center">
+      <div class="bigTitle">You're My Valentine 💖</div>
+      <div class="sub">Thank you for choosing me ❤️</div>
+      <button class="opt" onclick="gate()">Continue</button>
+    </div>
+  `;
+}
 
-  function escapeHtml(str){
-    return String(str)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
+function gate(){
+  screen.innerHTML=`
+    <div class="center">
+      <div class="bigTitle">Will you be my Valentine? 💍</div>
+      <div class="row">
+        <button class="yesBtn" onclick="final()">YES</button>
+        <button class="noBtn" onclick="showToast('❌ Invalid choice.\\nSystem says you are already mine ❤️','error')">NO</button>
+      </div>
+      <div class="note">(There is only one correct answer 😌)</div>
+    </div>
+  `;
+}
 
-  renderQuestion();
+function final(){
+  showToast("💖 YAYYYY 💖","good");
+  setTimeout(()=>{
+    screen.innerHTML=`
+      <div class="center">
+        <div class="bigTitle">Forever Us ❤️</div>
+        <div class="sub">Screenshot this & send it to me 😘</div>
+      </div>
+    `;
+  },700);
+}
+
+render();
 </script>
+
 </body>
 </html>
