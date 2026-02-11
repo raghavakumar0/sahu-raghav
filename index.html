@@ -40,21 +40,20 @@ body{
   background-image: var(--bg-photo-url);
   background-size: cover;
   background-position: center;
-  filter: blur(18px) saturate(1.1);
-  transform: scale(1.08);
-  opacity: .25;        /* adjust to 0.18–0.35 */
+  filter: blur(18px) saturate(1.2);
+  transform: scale(1.12);
+  opacity: .55;      /* was .25 */
   z-index:-3;
 }
 
-/* ✅ Gradient overlay */
+/* keep gradient but make it transparent so photo shows through */
 .bgGradient{
   position:fixed;
   inset:0;
   background:
-    radial-gradient(circle at 20% 20%, #fff 0%, transparent 35%),
-    radial-gradient(circle at 80% 10%, #fff 0%, transparent 30%),
-    linear-gradient(135deg, var(--bg1), var(--bg2));
-  opacity: .95;
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.55) 0%, transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(255,255,255,.45) 0%, transparent 35%),
+    linear-gradient(135deg, rgba(253,231,243,.55), rgba(251,207,232,.55));
   z-index:-2;
 }
 
