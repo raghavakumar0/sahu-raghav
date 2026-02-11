@@ -8,11 +8,9 @@
 <style>
 :root{
   --pink:#ec4899;
-  --rose:#fb7185;
   --bg1:#fde7f3;
   --bg2:#fbcfe8;
   --card:#fffafc;
-  --text:#374151;
   --muted:#6b7280;
   --border:#f3c1d9;
   --goodBg:#fff;
@@ -23,7 +21,7 @@
   --badText:#7c2d12;
 }
 
-*{ box-sizing:border-box; font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+*{ box-sizing:border-box; font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial; }
 
 body{
   margin:0;
@@ -31,28 +29,51 @@ body{
   display:grid;
   place-items:center;
   padding:18px;
+  overflow:hidden;
+  position:relative;
+}
+
+/* ✅ Blurred couple photo background layer */
+.bgPhoto{
+  position:fixed;
+  inset:0;
+  background-image: var(--bg-photo-url);
+  background-size: cover;
+  background-position: center;
+  filter: blur(18px) saturate(1.1);
+  transform: scale(1.08);
+  opacity: .25;        /* adjust to 0.18–0.35 */
+  z-index:-3;
+}
+
+/* ✅ Gradient overlay */
+.bgGradient{
+  position:fixed;
+  inset:0;
   background:
     radial-gradient(circle at 20% 20%, #fff 0%, transparent 35%),
     radial-gradient(circle at 80% 10%, #fff 0%, transparent 30%),
     linear-gradient(135deg, var(--bg1), var(--bg2));
-  overflow:hidden;
+  opacity: .95;
+  z-index:-2;
 }
 
 /* Floating hearts */
 .heart{
-  position:absolute;
+  position:fixed;
   color:#f472b6;
   font-size:18px;
   animation: float 9s linear infinite;
   opacity:.55;
   user-select:none;
+  z-index:-1;
 }
 @keyframes float{
   from{ transform:translateY(110vh) translateX(0); }
   to{ transform:translateY(-10vh) translateX(22px); }
 }
 
-.wrap{ width:min(640px,100%); z-index:1; }
+.wrap{ width:min(640px,100%); }
 
 .topbar{
   display:flex;
@@ -135,12 +156,7 @@ h2{
   font-weight:800;
   font-size:12px;
 }
-.imgBox img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
+.imgBox img{ width:100%; height:100%; object-fit:cover; display:block; }
 
 .btns{ display:flex; flex-direction:column; gap:12px; }
 .opt{
@@ -185,6 +201,10 @@ h2{
 
 <body>
 
+<!-- ✅ Blurred background photo + gradient overlay -->
+<div class="bgPhoto" id="bgPhoto"></div>
+<div class="bgGradient"></div>
+
 <!-- Floating hearts -->
 <span class="heart" style="left:8%;  animation-delay:0s;">💖</span>
 <span class="heart" style="left:22%; animation-delay:2s;">💗</span>
@@ -205,14 +225,17 @@ h2{
   </div>
 </div>
 
-<!-- Background music (your working Pixabay link) -->
+<!-- Music -->
 <audio id="bgm" loop preload="auto">
   <source src="https://cdn.pixabay.com/audio/2024/12/18/audio_6dc9c1487a.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-/** Files */
-const photoFile = "PHOTO-2026-02-09-22-27-35.jpg"; // ensure this exact file name exists in repo root
+/** ✅ Put your couple photo as bg.jpg in the repo root (same folder as index.html) */
+const backgroundPhotoFile = "bg.jpg";  // change if your file name differs
+document.documentElement.style.setProperty("--bg-photo-url", `url('${backgroundPhotoFile}')`);
+
+const photoFile = "PHOTO-2026-02-09-22-27-35.jpg"; // your photo for the photo question (must exist in repo root)
 
 /** Correct answers */
 const correctAnswers = {
@@ -227,30 +250,30 @@ const questions = [
   {
     id:"q1",
     text:"When did I first fall for you? 💕",
-    options:["11 May 2025","26 April 2025","14 April 2025","I don't remember 🥺"],
-    good:"Awww ❤️ You remembered! counrty club roje padipoya :p",
-    bad:"No no 😄 One more chance… What Sahu idhi teledha?"
+    options:["11 February 2025","05 November 2024","14 February 2025","I don't remember 🥺"],
+    good:"Awww ❤️ You remembered!",
+    bad:"No no 😄 One more chance…"
   },
   {
     id:"q2",
     text:"What did I gift you on our first meet? 🌹",
     options:["Roses","Chocolates","Watch","Nothing 😅"],
-    good:"Correct 🌹 Eesari bouquet istha",
-    bad:"😡 Anthele maavenduk gurhuntayandi…"
+    good:"Correct 🌹",
+    bad:"😡 Wrong! One more chance…"
   },
   {
     id:"q3",
     text:"Where was our first kiss? 😏",
     options:["Car","Elevator","Parking","Secret 🙈"],
-    good:"Ohooo 💋 cheek meedha icha gurtunda madam",
-    bad:"👀 Wrong guess… try again mana first kiss re eddi"
+    good:"Ohooo 💋",
+    bad:"👀 Wrong guess… try again"
   },
   {
     id:"q4",
     text:"Where are we going first in Europe? ✈️",
     options:["Paris","Rome","Amsterdam","Zurich"],
-    good:"Paris it is 💕 Hammaya gurtundhi",
-    bad:"Ayya wrong 😄 pick again",
+    good:"Paris it is 💕",
+    bad:"Hamayya 😄 pick again",
     showImage:true
   }
 ];
@@ -258,7 +281,7 @@ const questions = [
 let score = 0;
 let index = 0;
 
-// attempts per question: 0 = first try, 1 = second try used
+/** attempts per question: 0 = first try, 1 = second try used */
 const attempts = Object.fromEntries(questions.map(q => [q.id, 0]));
 
 const screen   = document.getElementById("screen");
@@ -266,14 +289,21 @@ const msg      = document.getElementById("msg");
 const scorebar = document.getElementById("scorebar");
 const card     = document.getElementById("card");
 
-/** Message banner */
-function showMsg(text, type){
+/** ✅ Prompt display durations */
+const MSG_DURATION_MS = 2800;      // stays longer so she can read
+const NEXT_DELAY_MS = 1100;        // delay before moving next (separate from msg)
+
+let msgTimer = null;
+function showMsg(text, type, durationMs = MSG_DURATION_MS){
+  if (msgTimer) clearTimeout(msgTimer);
   msg.className = "msg " + type;
   msg.textContent = text;
   msg.classList.add("show");
-  setTimeout(() => msg.classList.remove("show"), 1200);
+  msgTimer = setTimeout(() => msg.classList.remove("show"), durationMs);
 }
+
 function clearMsg(){
+  if (msgTimer) clearTimeout(msgTimer);
   msg.className = "msg";
   msg.textContent = "";
   msg.classList.remove("show");
@@ -315,8 +345,11 @@ function onPick(btn){
   if (chosen === correct){
     // add score ONLY if correct on first try
     if (attempts[q.id] === 0) score += 1;
+
     showMsg(q.good, "good");
-    goNext(650);
+
+    // wait a bit so message is readable, then go next
+    goNext(NEXT_DELAY_MS);
     return;
   }
 
@@ -330,7 +363,7 @@ function onPick(btn){
 
   // Second wrong → move on (no score)
   showMsg("Okay okay 😄 next one…", "bad");
-  goNext(650);
+  goNext(NEXT_DELAY_MS);
 }
 
 function goNext(delay){
@@ -344,6 +377,7 @@ function goNext(delay){
 /** Result */
 function result(){
   scorebar.textContent = `Score: ${score}/4`;
+  clearMsg();
   screen.innerHTML = `
     <div class="center">
       <div class="bigTitle">You're My Valentine 💖</div>
@@ -365,7 +399,7 @@ function gate(){
         <button class="yesBtn" id="yes">YES</button>
         <button class="noBtn" id="no">NO</button>
       </div>
-      <div class="note">(Try clicking NO 😄)</div>
+      <div class="note">I dare you to click NO 😈</div>
     </div>
   `;
 
@@ -400,7 +434,7 @@ function gate(){
   no.addEventListener("click", (e) => { e.preventDefault(); dodge(); });
 
   yes.onclick = () => {
-    showMsg("💖 YAYYYY 💖", "good");
+    showMsg("💖 YAYYYY 💖", "good", 4500);
     setTimeout(() => {
       screen.innerHTML = `
         <div class="center">
@@ -409,7 +443,7 @@ function gate(){
           <div class="note">P.S. First gift after this quiz = a watch ⌚😉</div>
         </div>
       `;
-    }, 700);
+    }, 1200);
   };
 }
 
@@ -427,8 +461,6 @@ function escapeHtml(str){
 const bgm = document.getElementById("bgm");
 const musicBtn = document.getElementById("musicBtn");
 let musicOn = false;
-
-// lower volume so it feels like background
 bgm.volume = 0.25;
 
 musicBtn.onclick = async () => {
