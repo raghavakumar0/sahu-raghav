@@ -432,18 +432,72 @@ function gate(){
   no.addEventListener("click", (e) => { e.preventDefault(); dodge(); });
 
   yes.onclick = () => {
-    showMsg("💖 YAYYYY 💖", "good", 4500);
-    setTimeout(() => {
-      screen.innerHTML = `
-        <div class="center">
-          <div class="bigTitle">Forever Us ❤️</div>
-          <div class="sub">Screenshot this & send it to me 😘</div>
-          <div class="note">P.S. First gift after this quiz = a watch ⌚😉</div>
+  showMsg("💖 YAYYYY 💖", "good", 4500);
+
+  setTimeout(() => {
+    screen.innerHTML = `
+      <div class="center">
+        <div class="bigTitle">Forever Us ❤️</div>
+        <div class="sub">Now tell me… what gift do you want? 😌</div>
+
+        <div style="margin-top:18px;">
+          <input id="giftInput" 
+            placeholder="Type your dream gift here 💝"
+            style="
+              padding:12px;
+              width:90%;
+              max-width:320px;
+              border-radius:12px;
+              border:1px solid #f3c1d9;
+              font-weight:600;
+              outline:none;
+              text-align:center;
+              background:#fff;
+            ">
         </div>
-      `;
-    }, 1200);
-  };
-}
+
+        <div style="margin-top:14px;">
+          <button id="sendGift"
+            style="
+              padding:12px 20px;
+              border-radius:14px;
+              border:none;
+              background:#ec4899;
+              color:white;
+              font-weight:900;
+              cursor:pointer;
+              box-shadow:0 8px 18px rgba(236,72,153,.3);
+            ">
+            Send Gift Wish 💌
+          </button>
+        </div>
+
+        <div class="note">Choose wisely… I’m watching 😏</div>
+      </div>
+    `;
+
+    document.getElementById("sendGift").onclick = () => {
+      const gift = document.getElementById("giftInput").value.trim();
+
+      if (!gift) {
+        showMsg("You must choose something first 😌", "bad");
+        return;
+      }
+
+      const email = "raghavakumar.0@gmail.com";
+      const subject = encodeURIComponent("My Valentine Gift Wish 💝");
+      const body = encodeURIComponent(
+        "Hi ❤️,\n\nFor Valentine's Day, I want:\n\n" +
+        gift +
+        "\n\nNow don’t say no 😌💘"
+      );
+
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    };
+
+  }, 1200);
+};
+
 
 /** Escape HTML */
 function escapeHtml(str){
