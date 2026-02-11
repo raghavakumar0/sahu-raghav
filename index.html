@@ -40,20 +40,20 @@ body{
   background-image: var(--bg-photo-url);
   background-size: cover;
   background-position: center;
-  filter: blur(18px) saturate(1.2);
-  transform: scale(1.12);
-  opacity: .55;      /* was .25 */
+  filter: blur(10px) brightness(0.85) saturate(1.2);
+  transform: scale(1.15);
+  opacity: .85;          /* Much stronger */
   z-index:-3;
 }
 
-/* keep gradient but make it transparent so photo shows through */
+/* Softer romantic overlay */
 .bgGradient{
   position:fixed;
   inset:0;
   background:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,.55) 0%, transparent 40%),
-    radial-gradient(circle at 80% 10%, rgba(255,255,255,.45) 0%, transparent 35%),
-    linear-gradient(135deg, rgba(253,231,243,.55), rgba(251,207,232,.55));
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(255,255,255,.25), transparent 35%),
+    linear-gradient(135deg, rgba(253,231,243,.35), rgba(251,207,232,.35));
   z-index:-2;
 }
 
