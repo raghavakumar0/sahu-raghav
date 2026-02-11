@@ -21,15 +21,9 @@
   --badBg:#fff;
   --badBorder:#fb7185;
   --badText:#7c2d12;
-  --errBg:#111827;
-  --errBorder:#fb7185;
-  --errText:#fecaca;
 }
 
-*{
-  box-sizing:border-box;
-  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial;
-}
+*{ box-sizing:border-box; font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial; }
 
 body{
   margin:0;
@@ -119,7 +113,6 @@ body{
 .msg.show{ opacity:1; transform: translateY(0); }
 .msg.good{ background:var(--goodBg); color:var(--goodText); border-color:var(--goodBorder); }
 .msg.bad{ background:var(--badBg); color:var(--badText); border-color:var(--badBorder); }
-.msg.error{ background:var(--errBg); color:var(--errText); border-color:var(--errBorder); font-size:14px; }
 
 h2{
   text-align:center;
@@ -149,11 +142,7 @@ h2{
   display:block;
 }
 
-.btns{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
+.btns{ display:flex; flex-direction:column; gap:12px; }
 .opt{
   padding:14px;
   border-radius:14px;
@@ -163,33 +152,20 @@ h2{
   cursor:pointer;
   transition:.15s;
 }
-.opt:hover{
-  background:#fdf2f8;
-  transform:scale(1.01);
-}
-.opt:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-  transform:none;
-}
+.opt:hover{ background:#fdf2f8; transform:scale(1.01); }
+.opt:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
 
 .center{text-align:center;}
-.bigTitle{
-  font-size:30px;
-  font-weight:900;
-  color:#be185d;
-}
-.sub{
-  font-size:18px;
-  margin-top:8px;
-  color:#6b7280;
-}
+.bigTitle{ font-size:30px; font-weight:900; color:#be185d; }
+.sub{ font-size:18px; margin-top:8px; color:#6b7280; }
 
 .row{
   display:flex;
   gap:16px;
   justify-content:center;
   margin-top:20px;
+  position:relative;
+  min-height:56px;
 }
 .yesBtn,.noBtn{
   padding:12px 22px;
@@ -198,15 +174,12 @@ h2{
   border:none;
   cursor:pointer;
   color:#fff;
+  box-shadow:0 10px 22px rgba(0,0,0,.12);
 }
 .yesBtn{ background:#22c55e; }
-.noBtn{ background:#ef4444; }
+.noBtn{ background:#ef4444; position:absolute; }
 
-.note{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:10px;
-}
+.note{ font-size:12px; color:var(--muted); margin-top:10px; }
 </style>
 </head>
 
@@ -226,58 +199,58 @@ h2{
     <button class="musicBtn" id="musicBtn">▶ Music</button>
   </div>
 
-  <div class="card">
+  <div class="card" id="card">
     <div class="msg" id="msg"></div>
     <div id="screen"></div>
   </div>
 </div>
 
-<!-- Background music (Pixabay direct link) -->
+<!-- Background music (your working Pixabay link) -->
 <audio id="bgm" loop preload="auto">
   <source src="https://cdn.pixabay.com/audio/2024/12/18/audio_6dc9c1487a.mp3" type="audio/mpeg">
 </audio>
 
 <script>
 /** Files */
-const photoFile = "PHOTO-2026-02-09-22-27-35.jpg"; // put your couple photo as photo.jpg in same repo folder as index.html
+const photoFile = "PHOTO-2026-02-09-22-27-35.jpg"; // ensure this exact file name exists in repo root
 
 /** Correct answers */
 const correctAnswers = {
-  q1:"05/11",
+  q1:"11 February 2025",
   q2:"Roses",
   q3:"Elevator",
   q4:"Paris"
 };
 
-/** Questions (personalized) */
+/** Questions */
 const questions = [
   {
     id:"q1",
     text:"When did I first fall for you? 💕",
-    options:["05/11","11/05","05/01","I don't remember 🥺"],
-    good:"Awww ❤️ You remembered!",
-    bad:"No no 😄 One more chance…"
+    options:["11 May 2025","26 April 2025","14 April 2025","I don't remember 🥺"],
+    good:"Awww ❤️ You remembered! counrty club roje padipoya :p",
+    bad:"No no 😄 One more chance… What Sahu idhi teledha?"
   },
   {
     id:"q2",
     text:"What did I gift you on our first meet? 🌹",
     options:["Roses","Chocolates","Watch","Nothing 😅"],
-    good:"Correct 🌹",
-    bad:"😡 Wrong! One more chance…"
+    good:"Correct 🌹 Eesari bouquet istha",
+    bad:"😡 Anthele maavenduk gurhuntayandi…"
   },
   {
     id:"q3",
     text:"Where was our first kiss? 😏",
     options:["Car","Elevator","Parking","Secret 🙈"],
-    good:"Ohooo 💋",
-    bad:"👀 Wrong guess… try again"
+    good:"Ohooo 💋 cheek meedha icha gurtunda madam",
+    bad:"👀 Wrong guess… try again mana first kiss re eddi"
   },
   {
     id:"q4",
     text:"Where are we going first in Europe? ✈️",
     options:["Paris","Rome","Amsterdam","Zurich"],
-    good:"Paris it is 💕",
-    bad:"Hamayya 😄 pick again",
+    good:"Paris it is 💕 Hammaya gurtundhi",
+    bad:"Ayya wrong 😄 pick again",
     showImage:true
   }
 ];
@@ -291,6 +264,7 @@ const attempts = Object.fromEntries(questions.map(q => [q.id, 0]));
 const screen   = document.getElementById("screen");
 const msg      = document.getElementById("msg");
 const scorebar = document.getElementById("scorebar");
+const card     = document.getElementById("card");
 
 /** Message banner */
 function showMsg(text, type){
@@ -315,7 +289,7 @@ function render(){
   const imgHtml = q.showImage ? `
     <div class="imgBox">
       <img src="${photoFile}" alt="photo"
-        onerror="this.style.display='none'; this.parentElement.textContent='(Add photo.jpg in repo to show image)'"/>
+        onerror="this.style.display='none'; this.parentElement.textContent='(Photo not found. Upload it to repo root.)'"/>
     </div>` : ``;
 
   screen.innerHTML = `
@@ -348,9 +322,8 @@ function onPick(btn){
 
   // wrong
   if (attempts[q.id] === 0){
-    // First wrong → give another chance, disable that wrong option
     attempts[q.id] = 1;
-    btn.disabled = true;
+    btn.disabled = true; // remove that choice so she can't pick it again
     showMsg(q.bad, "bad");
     return; // stay on same question
   }
@@ -382,25 +355,51 @@ function result(){
   document.getElementById("continue").onclick = gate;
 }
 
-/** Valentine Gate */
+/** Valentine Gate (NO keeps moving, cannot be clicked) */
 function gate(){
   clearMsg();
   screen.innerHTML = `
     <div class="center">
       <div class="bigTitle">Will you be my Valentine? 💍</div>
-      <div class="row">
+      <div class="row" id="row">
         <button class="yesBtn" id="yes">YES</button>
         <button class="noBtn" id="no">NO</button>
       </div>
-      <div class="note">(There is only one correct answer 😌)</div>
+      <div class="note">(Try clicking NO 😄)</div>
     </div>
   `;
 
-  document.getElementById("no").onclick = () => {
-    showMsg("❌ Invalid choice.\nSystem has detected you are already my Valentine. ❤️", "error");
-  };
+  const yes = document.getElementById("yes");
+  const no  = document.getElementById("no");
+  const row = document.getElementById("row");
 
-  document.getElementById("yes").onclick = () => {
+  // Place NO initially
+  moveNo();
+
+  function moveNo(){
+    const rowRect = row.getBoundingClientRect();
+    const noRect  = no.getBoundingClientRect();
+
+    const maxX = Math.max(0, rowRect.width  - noRect.width  - 8);
+    const maxY = Math.max(0, rowRect.height - noRect.height - 8);
+
+    const x = Math.floor(Math.random() * (maxX + 1));
+    const y = Math.floor(Math.random() * (maxY + 1));
+
+    no.style.left = x + "px";
+    no.style.top  = y + "px";
+  }
+
+  function dodge(){
+    moveNo();
+  }
+
+  // NO cannot be selected: it dodges on hover & click
+  no.addEventListener("mouseenter", dodge);
+  no.addEventListener("touchstart", dodge, { passive: true });
+  no.addEventListener("click", (e) => { e.preventDefault(); dodge(); });
+
+  yes.onclick = () => {
     showMsg("💖 YAYYYY 💖", "good");
     setTimeout(() => {
       screen.innerHTML = `
@@ -435,7 +434,7 @@ bgm.volume = 0.25;
 musicBtn.onclick = async () => {
   try {
     if (!musicOn){
-      await bgm.play(); // requires user click (this is the click)
+      await bgm.play();
       musicOn = true;
       musicBtn.textContent = "⏸ Music";
       showMsg("Music on 🎶", "good");
@@ -446,7 +445,7 @@ musicBtn.onclick = async () => {
       showMsg("Music off", "bad");
     }
   } catch (e){
-    showMsg("Music couldn't play on this browser.\nTry tapping again or use Chrome.", "bad");
+    showMsg("Music couldn't play.\nTry tapping again or use Chrome.", "bad");
   }
 };
 
