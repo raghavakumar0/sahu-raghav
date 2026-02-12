@@ -441,7 +441,7 @@ function gate(){
         <div class="sub">Now tell me… what gift do you want? 😌</div>
 
         <div style="margin-top:18px;">
-          <input id="giftInput" 
+          <input id="giftInput"
             placeholder="Type your dream gift here 💝"
             style="
               padding:12px;
@@ -468,11 +468,11 @@ function gate(){
               cursor:pointer;
               box-shadow:0 8px 18px rgba(236,72,153,.3);
             ">
-            Send Gift Wish 💌
+            Open Gmail 💌
           </button>
         </div>
 
-        <div class="note">Choose wisely… I’m watching 😏</div>
+        <div class="note">If it doesn't open, message will be copied ✅</div>
       </div>
     `;
 
@@ -485,16 +485,45 @@ function gate(){
       }
 
       const email = "raghavakumar.0@gmail.com";
-      const subject = encodeURIComponent("My Valentine Gift Wish 💝");
-      const body = encodeURIComponent(
-        "Hi ❤️,\n\nFor Valentine's Day, I want:\n\n" +
-        gift +
-        "\n\nNow don’t say no 😌💘"
-      );
+      const subjectText = "My Valentine Gift Wish 💝";
+      const bodyText =
+`Hi ❤️,
 
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+For Valentine's Day, I want:
+
+${gift}
+
+Now don’t say no 😌💘`;
+
+      const gmailUrl =
+        "https://mail.google.com/mail/?view=cm&fs=1" +
+        "&to=" + encodeURIComponent(email) +
+        "&su=" + encodeURIComponent(subjectText) +
+        "&body=" + encodeURIComponent(bodyText);
+
+      const mailtoUrl =
+        "mailto:" + encodeURIComponent(email) +
+        "?subject=" + encodeURIComponent(subjectText) +
+        "&body=" + encodeURIComponent(bodyText);
+
+      const copyText = `To: ${email}\nSubject: ${subjectText}\n\n${bodyText}`;
+
+      // Try opening Gmail in a new tab
+      const win = window.open(gmailUrl, "_blank");
+
+      // Copy best-effort
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyText).catch(() => {});
+      }
+
+      if (!win) {
+        // Popup blocked → fallback
+        window.location.href = mailtoUrl;
+        showMsg("Popup blocked 😅 Message copied ✅\nPaste in Gmail/WhatsApp", "good", 7000);
+      } else {
+        showMsg("Opening Gmail… 💌\nMessage copied ✅", "good", 7000);
+      }
     };
-
   }, 1200);
  };
 }
