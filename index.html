@@ -508,20 +508,20 @@ Now don’t say no 😌💘`;
 
       const copyText = `To: ${email}\nSubject: ${subjectText}\n\n${bodyText}`;
 
-      // Try opening Gmail in a new tab
-      const win = window.open(gmailUrl, "_blank");
-
-      // Copy best-effort
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(copyText).catch(() => {});
+      try {
+        window.location.href = gmailUrl;
+      } catch (e) {
+        window.location.href = mailtoUrl;
       }
 
-      if (!win) {
-        // Popup blocked → fallback
-        window.location.href = mailtoUrl;
-        showMsg("Popup blocked 😅 Message copied ✅\nPaste in Gmail/WhatsApp", "good", 7000);
+      // Always copy as guaranteed fallback
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyText).then(() => {
+        showMsg("Opening Gmail… 💌\nMessage copied ✅ (paste if needed)", "good", 7000);
+        }).catch(() => {
+          showMsg("Opening Gmail… 💌\nIf it doesn't auto-fill, copy manually.", "good", 7000);});
       } else {
-        showMsg("Opening Gmail… 💌\nMessage copied ✅", "good", 7000);
+        showMsg("Opening Gmail… 💌\nIf it doesn't auto-fill, copy manually.", "good", 7000);
       }
     };
   }, 1200);
